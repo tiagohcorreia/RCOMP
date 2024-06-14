@@ -1,0 +1,164 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+ip dhcp excluded-address 172.21.59.1
+ip dhcp excluded-address 172.21.50.1
+ip dhcp excluded-address 172.21.51.2
+ip dhcp excluded-address 172.21.52.1
+!
+ip dhcp pool NETWORK1
+ network 172.21.59.0 255.255.255.192
+ default-router 172.21.59.1
+ dns-server 172.21.60.194
+ domain-name dei.isep.ipp.pt
+ip dhcp pool NETWORK2
+ network 172.21.50.0 255.255.255.0
+ default-router 172.21.50.1
+ dns-server 172.21.60.194
+ domain-name dei.isep.ipp.pt
+ip dhcp pool NETWORK3
+ network 172.21.51.0 255.255.255.0
+ default-router 172.21.51.2
+ dns-server 172.21.60.194
+ domain-name dei.isep.ipp.pt
+ip dhcp pool NETWORK4
+ network 172.21.52.0 255.255.255.0
+ default-router 172.21.52.1
+ dns-server 172.21.60.194
+ domain-name dei.isep.ipp.pt
+ip dhcp pool NETWORK5
+ network 172.21.60.192 255.255.255.192
+ default-router 172.21.60.193
+ dns-server 172.21.60.194
+ domain-name dei.isep.ipp.pt
+ip dhcp pool NETWORK7
+ network 172.21.59.0 255.255.255.128
+ default-router 172.21.59.1
+ dns-server 172.21.60.194
+ domain-name dei.isep.ipp.pt
+ip dhcp pool MYVOIP
+ network 172.21.52.0 255.255.255.0
+ default-router 172.21.52.1
+ option 150 ip 172.21.52.1
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017N1TO-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/0.1
+ encapsulation dot1Q 354
+ ip address 172.21.59.1 255.255.255.128
+!
+interface FastEthernet0/0.2
+ encapsulation dot1Q 355
+ ip address 172.21.50.1 255.255.255.0
+!
+interface FastEthernet0/0.3
+ encapsulation dot1Q 356
+ ip address 172.21.51.2 255.255.255.0
+!
+interface FastEthernet0/0.4
+ encapsulation dot1Q 357
+ ip address 172.21.60.193 255.255.255.192
+ ip nat inside
+!
+interface FastEthernet0/0.5
+ encapsulation dot1Q 358
+ ip address 172.21.52.1 255.255.255.0
+!
+interface FastEthernet0/0.6
+ encapsulation dot1Q 343
+ ip address 172.21.48.5 255.255.255.0
+ ip nat outside
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+!
+router ospf 3
+ log-adjacency-changes
+ network 172.21.59.0 0.0.0.127 area 3
+ network 172.21.60.192 0.0.0.63 area 3
+ network 172.21.48.0 0.0.0.255 area 0
+!
+router rip
+!
+ip nat inside source static 172.21.60.194 172.21.60.195 
+ip classless
+ip route 0.0.0.0 0.0.0.0 172.21.48.3 
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+dial-peer voice 1 voip
+ destination-pattern 1...
+ session target ipv4:172.21.48.3
+!
+telephony-service
+ max-ephones 2
+ max-dn 2
+ ip source-address 172.21.52.1 port 2000
+ auto assign 1 to 2
+!
+ephone-dn 1
+ number 3001
+!
+ephone-dn 2
+ number 3002
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+

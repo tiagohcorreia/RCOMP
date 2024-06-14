@@ -1,0 +1,161 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router
+!
+!
+!
+!
+ip dhcp excluded-address 172.21.57.129
+ip dhcp excluded-address 172.21.58.1
+ip dhcp excluded-address 172.21.49.1
+ip dhcp excluded-address 172.21.58.129
+!
+ip dhcp pool MEU_POOL
+ip dhcp pool b2-f0
+ network 172.21.57.128 255.255.255.128
+ default-router 172.21.57.129
+ dns-server 172.21.60.130
+ domain-name ns.building-2.rcomp-23-24-da-g4
+ip dhcp pool b2-wifi
+ network 172.21.49.0 255.255.255.0
+ default-router 172.21.49.1
+ dns-server 172.21.60.130
+ domain-name ns.building-2.rcomp-23-24-da-g4
+ip dhcp pool b2-f1
+ network 172.21.58.0 255.255.255.128
+ default-router 172.21.58.1
+ dns-server 172.21.60.130
+ domain-name ns.building-2.rcomp-23-24-da-g4
+ip dhcp pool b2-voip
+ network 172.21.58.128 255.255.255.128
+ default-router 172.21.58.129
+ option 150 ip 172.21.58.129
+ dns-server 172.21.60.130
+ domain-name ns.building-2.rcomp-23-24-da-g4
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017I9OF-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/0.1
+ encapsulation dot1Q 349
+ ip address 172.21.57.129 255.255.255.128
+!
+interface FastEthernet0/0.2
+ encapsulation dot1Q 350
+ ip address 172.21.58.1 255.255.255.128
+!
+interface FastEthernet0/0.3
+ encapsulation dot1Q 351
+ ip address 172.21.49.1 255.255.255.0
+!
+interface FastEthernet0/0.4
+ encapsulation dot1Q 352
+ ip address 172.21.60.129 255.255.255.192
+!
+interface FastEthernet0/0.5
+ encapsulation dot1Q 353
+ ip address 172.21.58.129 255.255.255.128
+!
+interface FastEthernet0/0.6
+ encapsulation dot1Q 343
+ ip address 172.21.48.4 255.255.255.0
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 2
+ log-adjacency-changes
+ network 172.21.48.0 0.0.0.255 area 2
+!
+router rip
+ network 172.21.0.0
+ no auto-summary
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+dial-peer voice 1 voip
+ destination-pattern 1...
+ session target ipv4:172.21.48.3
+!
+telephony-service
+ max-ephones 2
+ max-dn 2
+ ip source-address 172.21.58.129 port 2000
+ auto assign 1 to 2
+!
+ephone-dn 1
+ number 2001
+!
+ephone-dn 2
+ number 2002
+!
+ephone 1
+ device-security-mode none
+ mac-address 000C.8558.B94E
+ type 7960
+ button 1:1
+!
+ephone 2
+ device-security-mode none
+ mac-address 0000.0C31.D274
+ type 7960
+ button 1:2
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
